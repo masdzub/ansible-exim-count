@@ -1,0 +1,41 @@
+---
+- hosts: YOUR_HOST
+  no_log: true
+  vars:
+        ansible_ssh_user: 'SSH_USER'
+        ansible_port: 'SSH_PORT'
+        ansible_ssh_private_key_file: "your_id_rsa_key"
+        limit_max: "2" #minimum want to display in log
+  tags:
+    - configuration
+  gather_facts: no
+  
+  tasks:
+   - name: Check exim using command (exim -bpc)
+     shell: exim -bpc
+     register: daxim
+
+   - name: Create file log and Remove file log if an exist
+     shell : rm -rf exim.txt; touch exim.txt
+     delegate_to: localhost
+     
+   - name: Server List 
+     shell: echo "{{ inventory_hostname }}" | awk '{ print $1 }' | cut -d "." -f1
+     register: server
+     
+#   - name: Show debugging on your fucking terminal
+#     debug:
+#      msg:
+#       - "{{ daxim.stdout }}"
+   
+   - name: Adding log to file
+     lineinfile:
+      dest: exim.txt
+      line: "{{ daxim.stdout }} exim count in server {{ server.stdout }}"
+      state: present
+     delegate_to: localhost
+     register: msgtxt
+     with_items:
+      - "{{ daxim.stdout }}"
+      - "{{ server.stdout }}"
+     when: daxim.stdout >= limit_max
