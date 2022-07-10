@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
-  gather_facts: no
+  gather_facts: False
 
   tasks: 
   - name: Create file log and Remove file log if an exist
@@ -22,7 +22,6 @@
    - name: Check exim using command (exim -bp)
      shell: exim -bp
      register: daxim
-
      
    - name: Server List 
      shell: echo "{{ inventory_hostname }}" | awk '{ print $1 }' | cut -d "." -f1
@@ -41,8 +40,4 @@
       line: "\n \n  [ {{ server.stdout }} ] ------------------------------------------ \n \n {{ daxim.stdout }} \n \n"
 #      state: present
      delegate_to: localhost
-#     register: msgtxt
-#     with_items:
-#      - "{{ daxim.stdout }}"
-#      - "{{ server.stdout }}"
      when: daxim.stdout >= limit
