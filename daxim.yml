@@ -1,26 +1,33 @@
 ---
-- hosts: YOUR_HOST
+- hosts: localhost
+  gather_facts: no
+
+  tasks: 
+  - name: Create file log and Remove file log if an exist
+    shell : rm -rf exim.txt; touch exim.txt
+
+- hosts: cpanel
   no_log: true
   vars:
-        ansible_ssh_user: 'SSH_USER'
-        ansible_port: 'SSH_PORT'
-        ansible_ssh_private_key_file: "your_id_rsa_key"
-        limit: "2" #minimum want to display in log
+#        ansible_ssh_user: 'your_user'
+#        ansible_port: 'your_port'
+#        ansible_ssh_private_key_file: "/home/user/.ssh/id_rsa"
+       limit: "1" #minimum want to display in log
   tags:
     - configuration
-  gather_facts: no
+  gather_facts: False
   
   tasks:
-   - name: Check exim using command (exim -bpc)
-     shell: exim -bpc
+
+   - name: Check exim using command (exim -bp)
+     shell: exim -bp
      register: daxim
 
-   - name: Create file log and Remove file log if an exist
-     shell : rm -rf exim.txt; touch exim.txt
-     delegate_to: localhost
      
    - name: Server List 
      shell: echo "{{ inventory_hostname }}" | awk '{ print $1 }' | cut -d "." -f1
+#     shell: echo "{{ inventory_hostname }}" 
+     no_log: True
      register: server
      
 #   - name: Show debugging on your fucking terminal
@@ -31,11 +38,11 @@
    - name: Adding log to file
      lineinfile:
       dest: exim.txt
-      line: "{{ daxim.stdout }} exim count in server {{ server.stdout }}"
-      state: present
+      line: "\n \n  [ {{ server.stdout }} ] ------------------------------------------ \n \n {{ daxim.stdout }} \n \n"
+#      state: present
      delegate_to: localhost
-     register: msgtxt
-     with_items:
-      - "{{ daxim.stdout }}"
-      - "{{ server.stdout }}"
+#     register: msgtxt
+#     with_items:
+#      - "{{ daxim.stdout }}"
+#      - "{{ server.stdout }}"
      when: daxim.stdout >= limit
