@@ -6,6 +6,11 @@
   - name: Create file log and Remove file log if an exist
     shell : rm -rf exim.txt; touch exim.txt
 
+
+
+
+
+
 - hosts: cpanel
   no_log: true
   vars:
@@ -29,10 +34,10 @@
      no_log: True
      register: server
      
-#   - name: Show debugging on your fucking terminal
-#     debug:
-#      msg:
-#       - "{{ daxim.stdout }}"
+   - name: Show debugging on your fucking terminal
+     debug:
+      msg:
+       - "{{ daxim.stdout }}"
    
    - name: Adding log to file
      lineinfile:
