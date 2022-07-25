@@ -6,7 +6,6 @@
   - name: Create file log and Remove file log if an exist
     shell : rm -rf exim.txt; touch exim.txt
 
-
 - hosts: cpanel
   no_log: true
   vars:
@@ -14,9 +13,12 @@
 #        ansible_port: 'your_port'
 #        ansible_ssh_private_key_file: "/home/user/.ssh/id_rsa"
        limit: "1" #minimum want to display in log
+  tags:
+    - configuration
   gather_facts: False
   
   tasks:
+
    - name: Check exim using command (exim -bp)
      shell: exim -bp
      register: daxim
@@ -27,10 +29,10 @@
      no_log: True
      register: server
      
-   - name: Show debugging on your fucking terminal
-     debug:
-      msg:
-       - "{{ daxim.stdout }}"
+#   - name: Show debugging on your fucking terminal
+#     debug:
+#      msg:
+#       - "{{ daxim.stdout }}"
    
    - name: Adding log to file
      lineinfile:
