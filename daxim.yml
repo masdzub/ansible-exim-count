@@ -6,11 +6,6 @@
   - name: Create file log and Remove file log if an exist
     shell : rm -rf exim.txt; touch exim.txt
 
-
-
-
-
-
 - hosts: cpanel
   no_log: true
   vars:
