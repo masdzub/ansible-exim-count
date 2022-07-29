@@ -14,10 +14,17 @@
    - name: Remove frozen email
      shell: exiqgrep -z -i | xargs exim -Mrm
 
-   - name: Remove failed email from skycloudstar
+   - name: Remove failed email send to skycloudstar
      shell: exiqgrep -r skycloudstar.com -i | xargs exim -Mrm
 
-   - name: Remove failed email from example.com -i | xargs exim -Mrm
+   - name: Remove failed email from example.com
      shell: exiqgrep -f example.com -i | xargs exim -Mrm
+   
+   - name: Remove failed email from skycloudstar
+     shell: exiqgrep -f skycloudstar.com -i | xargs exim -Mrm
+   
+   - name: Remove failed email send to example
+     shell: exiqgrep -r example.com -i | xargs exim -Mrm
 
- 
+   - name: Remove failed email older than one hours
+     shell: exiqgrep -o 3600 -i | xargs exim -Mrm
